@@ -1,1 +1,1 @@
-# revise
+# Revise: An open-source note taking app.
