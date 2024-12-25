@@ -1,11 +1,12 @@
-import { db, userTable, sessionTable } from "./schema";
+import { userTable, sessionTable } from "./schema";
+import { db } from "./db"
 import { eq } from "drizzle-orm";
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/encoding";
 import { sha256 } from "@oslojs/crypto/sha2";
 import { cookies } from "next/headers";
 import { cache } from "react";
 
-import type { User, Session } from "./schema";
+import type { User, Session, SessionFlags } from "./schema";
 
 export function generateSessionToken(): string {
 	const bytes = new Uint8Array(20);
@@ -14,12 +15,18 @@ export function generateSessionToken(): string {
 	return token;
 }
 
-export async function createSession(token: string, userId: number): Promise<Session> {
+export async function createSession(token: string, userId: number, flags?: SessionFlags): Promise<Session> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	if (flags === undefined) {
+		flags = {
+			twoFactorVerified: false
+		};
+	}	
 	const session: Session = {
 		id: sessionId,
 		userId,
-		expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
+		expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+		twoFactorVerified: flags.twoFactorVerified,
 	};
 	await db.insert(sessionTable).values(session);
 	return session;
@@ -54,6 +61,10 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 
 export async function invalidateSession(sessionId: string): Promise<void> {
 	await db.delete(sessionTable).where(eq(sessionTable.id, sessionId));
+}
+
+export async function invalidateUserSessions(userId: number): Promise<void> {
+	await db.delete(sessionTable).where(eq(sessionTable.userId, userId));
 }
 
 export type SessionValidationResult =

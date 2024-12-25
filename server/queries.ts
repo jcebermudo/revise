@@ -1,5 +1,5 @@
 import { userTable } from "./schema";
-import { db } from "./schema";
+import { db } from "./db";
 import { eq } from "drizzle-orm";
 
 export async function getUserFromGoogleId(googleUserId: string) {
