@@ -3,8 +3,13 @@ import { getCurrentSession } from "@/server/session";
 
 export default async function Page() {
   const { user } = await getCurrentSession();
-  if (user === null) {
-    return redirect("/login");
+  if (user !== null) {
+    return redirect("/");
   }
-  return <h1>Hi, {user.name}!</h1>;
+  return (
+    <>
+      <h1>Sign in</h1>
+      <a href="/login/google">Sign in with Google</a>
+    </>
+  );
 }
