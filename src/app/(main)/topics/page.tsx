@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { getCurrentSession } from "@/server/session";
+import TopicButton from "./components/topicButton";
 
 export default async function TopicsPage() {
   const { user } = await getCurrentSession();
@@ -11,4 +12,10 @@ export default async function TopicsPage() {
   if (user.username === null) {
     return redirect("/setup");
   }
+  return (
+    <>
+      <h1>Topics</h1>
+      <TopicButton></TopicButton>
+    </>
+  )
 }

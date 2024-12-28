@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { getCurrentSession } from "@/server/session";
-import UsernameInput from "./components/username";
+import UsernameInput from "./components/username-new";
 
 export default async function SetupPage() {
   const { user } = await getCurrentSession();
