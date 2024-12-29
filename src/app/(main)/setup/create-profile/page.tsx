@@ -26,19 +26,16 @@ export async function getPfp(): Promise<string> {
   return pfpLink[0].profilePicture;
 }
 
-
-
 export default async function CreateProfilePage() {
   if (user === null) {
     throw new Error("User not logged in");
   }
-  const cid = user?.pfpCID;
   const pfpLink = await getPfp();
   return (
     <div>
       <h1>Create Profile</h1>
-      <Image src={pfpLink} alt="profile picture" width={100} height={100} />
-      <UploadPFP cid={cid ?? ""} />
+      <Image src={pfpLink} alt="Profile Picture" width={200} height={200} />
+      <UploadPFP />
     </div>
   );
 }

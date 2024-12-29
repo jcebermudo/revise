@@ -2,35 +2,40 @@
 
 import React, { useState } from "react";
 import setPFP from "@/server/actions/set-pfp";
-import deletePrevPFP from "@/server/actions/deleteprevPFP";
 
-export default function UploadFile (cid: string | null) {
-  const [file, setFile] = useState<File | null>(null);
-  const [url, setUrl] = useState("");
+export default function UploadFile() {
   const [uploading, setUploading] = useState(false);
 
   const uploadFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
-      if (file) {
-        await deletePrevPFP(cid);
-      }
-      setFile(e.target?.files?.[0] || null);
-      if (!file) {
+      const selectedFile = e.target?.files?.[0];
+      if (!selectedFile) {
         return console.log("No file selected");
       }
       setUploading(true);
+
       const data = new FormData();
-      data.set("file", file);
+      data.set("file", selectedFile); // Use selectedFile instead of file state
+
       const uploadRequest = await fetch("/api/files", {
         method: "POST",
         body: data,
       });
+
+      if (!uploadRequest.ok) {
+        throw new Error(`Upload failed with status: ${uploadRequest.status}`);
+      }
+
       const signedUrl = await uploadRequest.json();
-      setUrl(signedUrl);
-      await setPFP(url);
+
+      // Only call setPFP after we have the signed URL
+      if (signedUrl) {
+        await setPFP(signedUrl);
+      }
+
       setUploading(false);
     } catch (e) {
-      console.log(e);
+      console.error(e);
       setUploading(false);
       alert("Trouble uploading file");
     }
@@ -49,5 +54,4 @@ export default function UploadFile (cid: string | null) {
       </label>
     </main>
   );
-};
-
+}
