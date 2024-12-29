@@ -7,8 +7,9 @@ import { userTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import Image from "next/image";
 
+const { user } = await getCurrentSession();
+
 export async function getPfp(): Promise<string> {
-  const { user } = await getCurrentSession();
   if (user === null) {
     throw new Error("User not logged in");
   }
@@ -25,19 +26,19 @@ export async function getPfp(): Promise<string> {
   return pfpLink[0].profilePicture;
 }
 
+
+
 export default async function CreateProfilePage() {
+  if (user === null) {
+    throw new Error("User not logged in");
+  }
+  const cid = user?.pfpCID;
   const pfpLink = await getPfp();
   return (
     <div>
       <h1>Create Profile</h1>
-      <Image
-        src={pfpLink}
-        width={500}
-        height={500}
-        alt="test"
-      />
-
-      <UploadPFP />
+      <Image src={pfpLink} alt="profile picture" width={100} height={100} />
+      <UploadPFP cid={cid ?? ""} />
     </div>
   );
 }

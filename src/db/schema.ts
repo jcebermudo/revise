@@ -8,7 +8,8 @@ export const userTable = pgTable("user", {
 	googleName: text("google_name").notNull(),
 	email: text("email").notNull(),
 	username: text("username").unique(),
-	profilePicture: text("profile_picture")
+	profilePicture: text("profile_picture"),
+	pfpCID: text("pfp_cid")
 });
 
 export const sessionTable = pgTable("session", {
