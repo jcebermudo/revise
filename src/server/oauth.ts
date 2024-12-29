@@ -14,10 +14,11 @@ export async function getUserFromGoogleId(googleUserId: string): Promise<User> {
     return verify[0] || null
 }
 
-export async function createUser(googleId: string, name: string): Promise<User> {
+export async function createUser(googleId: string, googleName: string, email: string): Promise<User> {
     await db.insert(userTable).values({
         googleId,
-        name
+        googleName,
+        email
     })
     const user = await db.select().from(userTable).where(eq(userTable.googleId, googleId))
     return user[0]
@@ -26,6 +27,7 @@ export async function createUser(googleId: string, name: string): Promise<User> 
 interface User {
 	id: number;
 	googleId: string;
-	name: string;
+	googleName: string;
+    email: string;
 }
 

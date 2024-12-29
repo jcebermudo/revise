@@ -10,7 +10,7 @@ export default async function TopicsPage() {
     return redirect("/login");
   }
   if (user.username === null) {
-    return redirect("/setup");
+    return redirect("/setup/create-link");
   }
   return (
     <>

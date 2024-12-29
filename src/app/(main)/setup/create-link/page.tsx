@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { getCurrentSession } from "@/server/session";
-import UsernameInput from "./components/username-new";
+import LinkInput from "./components/link";
 
 export default async function SetupPage() {
   const { user } = await getCurrentSession();
@@ -14,7 +14,7 @@ export default async function SetupPage() {
   }
   return (
     <div>
-      <UsernameInput />
+      <LinkInput />
     </div>
   );
 }

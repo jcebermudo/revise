@@ -5,8 +5,10 @@ import type { InferSelectModel } from "drizzle-orm";
 export const userTable = pgTable("user", {
 	id: serial("id").primaryKey(),
 	googleId: text("google_id").notNull(),
-	name: text("name").notNull(),
-	username: text("username")
+	googleName: text("google_name").notNull(),
+	email: text("email").notNull(),
+	username: text("username").unique(),
+	profilePicture: text("profile_picture")
 });
 
 export const sessionTable = pgTable("session", {
